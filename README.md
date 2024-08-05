@@ -5,7 +5,7 @@
 First, clone this repository to your local machine using:
 
 ```bash
-git clone [https://github.com/your-username/your-repo-name.git](https://github.com/SafiqJasnai/zrch.git)
+git clone https://github.com/SafiqJasnai/zrch.git
 cd zrch
 ```
 
