@@ -1,0 +1,46 @@
+import type { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+
+declare module 'next-auth' {
+  interface User {
+    picture?: string
+  }
+  
+  interface Session {
+    user: {
+      name?: string
+      email?: string
+      image?: string
+      picture?: string // Add the picture property
+    }
+  }
+
+  interface Profile {
+    name?: string
+    email?: string
+    picture?: string // Add the picture property
+  }
+}
+
+// Define authentication options using NextAuthOptions interface
+export const authOptions: NextAuthOptions = {
+  // Customize authentication pages
+  pages: {
+    signIn: "/login", // Redirect users to "/login" when signing in
+  },
+  // Configure session management
+  session: {
+    strategy: "jwt", // Use JSON Web Tokens (JWT) for session management
+  },
+  // added secret key
+  secret: process.env.NEXT_PUBLIC_SECRET,
+  // Configure authentication providers
+  providers: [
+    GoogleProvider({
+      // Configure Google authentication provider with environment variables
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    // CredentialsProvider({}), // Include a Credentials provider (username/password)
+  ]
+};
