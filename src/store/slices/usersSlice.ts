@@ -1,6 +1,4 @@
-// store/slices/usersSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface User {
   id: number
@@ -24,10 +22,15 @@ const initialState: UsersState = {
   error: null,
 }
 
-// Asynchronous thunk action
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  const response = await axios.get('https://reqres.in/api/users?page=1&per_page=12')
-  return response.data.data as User[]
+  const response = await fetch('/api/users/masked-email');
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch users');
+  }
+
+  const users: User[] = await response.json();
+  return users;
 })
 
 const usersSlice = createSlice({
