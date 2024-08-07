@@ -1,33 +1,34 @@
 'use client'
 
 import UserTable from "@/components/dashboard/user-table";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { RootState, useAppDispatch } from "@/store";
+import { fetchUsers } from "@/store/slices/usersSlice";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function Users() {
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const dispatch = useAppDispatch()
+  const { filteredUsers, status, error } = useSelector(
+    (state: RootState) => state.users
+  )
 
   useEffect(() => {
-    const checkSession = async () => {
-      const session = await getSession();
-      if (!session) {
-        router.push('/error/403'); // Redirect to error page
-      } else {
-        setLoading(false);
-      }
-    };
-    checkSession();
-  }, [router]);
+    if (status === 'idle') {
+      dispatch(fetchUsers())
+    }
+  }, [status, dispatch])
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (status === 'loading') {
+    return <div>Loading...</div>
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>
   }
 
   return (
     <div className="p-6">
-        <UserTable />
+      <UserTable users={filteredUsers}/>
     </div>
   );
 }

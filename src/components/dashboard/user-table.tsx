@@ -8,11 +8,19 @@ import { Table, TableHeader, TableRow, TableCell, TableBody } from '../ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 
-const UserTable = () => {
-  const dispatch = useAppDispatch()
-  const { filteredUsers, status, error } = useSelector(
-    (state: RootState) => state.users
-  )
+interface User {
+  id: number;
+  avatar: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+interface UserTableProps {
+  users: User[];
+}
+
+const UserTable: React.FC<UserTableProps> = ({ users }) => {
   const [emailVisibility, setEmailVisibility] = useState<Record<number, boolean>>({})
 
   const handleEmailClick = (userId: number) => {
@@ -20,20 +28,6 @@ const UserTable = () => {
       ...prev,
       [userId]: !prev[userId],
     }))
-  }
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchUsers())
-    }
-  }, [status, dispatch])
-
-  if (status === 'loading') {
-    return <div>Loading...</div>
-  }
-
-  if (status === 'failed') {
-    return <div>Error: {error}</div>
   }
 
   return (
@@ -64,7 +58,7 @@ const UserTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {users.map((user) => (
                 <TableRow key={user.id} className="hover:bg-gray-50">
                   <TableCell className="px-6 py-4 whitespace-nowrap">
                     {user.id}

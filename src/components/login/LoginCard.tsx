@@ -22,7 +22,7 @@ export function LoginCard() {
         <CardDescription>Login with a Smile 😊.</CardDescription>
       </CardHeader>
       <CardContent className="text-center">
-      <Button onClick={() => signIn('google', { callbackUrl })}>Sign in with Google</Button>
+        <Button onClick={() => signIn('google', { callbackUrl })}>Sign in with Google</Button>
       </CardContent>
     </Card>
   )
