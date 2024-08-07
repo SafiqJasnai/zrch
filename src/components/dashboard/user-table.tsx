@@ -1,9 +1,6 @@
 "use client"
 
-import { RootState, useAppDispatch } from '@/store'
-import { fetchUsers } from '@/store/slices/usersSlice'
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useState } from 'react'
 import { Table, TableHeader, TableRow, TableCell, TableBody } from '../ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
