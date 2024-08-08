@@ -1,9 +1,12 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table, TableHeader, TableRow, TableCell, TableBody } from '../ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
+import { RootState, useAppDispatch } from '@/store'
+import { useSelector } from 'react-redux'
+import { fetchUserById } from '@/store/slices/usersSlice'
 
 interface User {
   id: number;
@@ -18,14 +21,26 @@ interface UserTableProps {
 }
 
 const UserTable: React.FC<UserTableProps> = ({ users }) => {
+  const dispatch = useAppDispatch()
+  const { selectedUser, selectedUserStatus } = useSelector((state: RootState) => state.users);
   const [emailVisibility, setEmailVisibility] = useState<Record<number, boolean>>({})
 
-  const handleEmailClick = (userId: number) => {
-    setEmailVisibility((prev) => ({
-      ...prev,
-      [userId]: !prev[userId],
-    }))
+  const handleEmailClick = async (userId: number) => {
+    await dispatch(fetchUserById(userId));
+  };
+
+  const handleEmailVisibility = () => {
+    if (selectedUser) {
+      setEmailVisibility((prev) => ({
+        ...prev,
+        [selectedUser?.id]: true,
+      }))
+    } 
   }
+
+  useEffect(() => {
+    handleEmailVisibility()
+  }, [selectedUser]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -74,12 +89,13 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
                     {user.last_name}
                   </TableCell>
                   <TableCell className="px-6 py-4 whitespace-nowrap">
-                    {emailVisibility[user.id] ? (
-                      user.email
+                    {emailVisibility[user.id] && selectedUser?.id === user.id ? (
+                      selectedUser.email
                     ) : (
                       <Button
                         color="primary"
                         onClick={() => handleEmailClick(user.id)}
+                        disabled={selectedUser?.id === user.id && selectedUserStatus === 'loading'}
                       >
                         Show Email
                       </Button>

@@ -10,6 +10,21 @@ interface User {
 
 export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('id');
+    const userIdNumber = userId ? parseInt(userId) : null;
+
+    if (userIdNumber) {
+      const response = await fetch(`https://reqres.in/api/users/${userIdNumber}`);
+      const { data } = await response.json();
+
+      if (data) {
+        return NextResponse.json(data);
+      } else {
+        return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      }
+    }
+    
     const users: User[] = [];
     let page = 1;
     let totalPages = 1;
